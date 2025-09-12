@@ -61,6 +61,9 @@ Da OBS keine eingebaute Replay-Logik für externe Streams hat, gibt es zwei mög
 
 ## Infos
 
+- [📄 settings.md](docs/settings.md) – Schritt-für-Schritt Einrichtung
+
+--- 
 
 ## Nächste Schritte
 - [ ] Python-Service (FastAPI/Flask) entwickeln, der für jeden Pfad die „letzten X Sekunden“ berechnet und als `/get`-URL ausliefert.  
