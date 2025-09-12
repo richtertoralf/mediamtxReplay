@@ -13,6 +13,14 @@ find /var/lib/mediamtx/recordings -maxdepth 2 -type d -printf "%P\n" | sed '/^$/
 
 ## 2) /list als Einzeiler mit jq (Prinzip)
 
+Mit dem Endpunkt `/list` fragt man die im Replay-Server gespeicherten **Segmente** eines Streams ab.  
+Die Antwort ist ein JSON-Array (oder bei nur einem Segment ein einzelnes Objekt) mit Feldern:
+
+- `start`    → Startzeitpunkt (UTC, RFC3339-Format)  
+- `duration` → Länge des Segments in Sekunden (kann Nachkommastellen haben)  
+- `url`      → fertiger Link zum Abruf dieses Segments über `/get`  
+
+### Beispiel: nur die letzte URL ausgeben
 ```bash
 # paar Variablen setzen
 HOST=127.0.0.1; PORT=9996; STREAM=testpattern-clock
@@ -23,13 +31,16 @@ curl -sG "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
 | jq -r '.[-1].url // .url'
 ```
 
+### Beispiel: Segmente aus den letzten 10 Minuten
 ```bash
 curl -sG "http://127.0.0.1:9996/list" \
   --data-urlencode "path=testpattern-clock" \
-  --data-urlencode "start=$(date -u -d '10 minutes ago' +%Y-%m-%dT%H:%M:%SZ)" | jq .
+  --data-urlencode "start=$(date -u -d '10 minutes ago' +%Y-%m-%dT%H:%M:%SZ)" \
+| jq .
+
 ```
-Ergebnis:
-```
+Ergebnis (Beispiel):
+```json
 [
   {
     "start": "2025-09-12T22:39:31Z",
@@ -37,8 +48,25 @@ Ergebnis:
     "url": "http://127.0.0.1:9996/get?duration=600.595724222&path=testpattern-clock&start=2025-09-12T22%3A39%3A31Z"
   }
 ]
-```
 
+```
+Was bedeutet das?
+
+Das Segment hat um 22:39:31 UTC begonnen.
+
+Es ist etwa 600 Sekunden (= 10 Minuten) lang.
+
+Über den url-Wert kann man das Segment direkt mit /get herunterladen oder im Browser/VLC öffnen.
+
+Mit den Parametern start= und end= lässt sich die Abfrage einschränken, z. B. nur ein bestimmter Zeitraum (z. B. Vormittag eines Wettkampftages).
+
+Kurz gesagt
+
+/list zeigt, was aufgezeichnet ist.
+
+.url liefert direkt den Abruf-Link.
+
+Mit jq kann man bequem die letzten Einträge oder bestimmte Zeitfenster filtern.
 
 ## Skript zur Anzeige der Replay-URL 20 Sekunden zurück
 ```bash
