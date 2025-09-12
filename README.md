@@ -26,7 +26,7 @@ Das Ziel: **Einfaches, schnelles Replay aus OBS heraus**, steuerbar über ein **
 
 - **StreamDeck-Integration**  
   - Erster Klick: Stream auswählen (z. B. „Kamera 1“ oder „Cam Clock“).  
-  - Zweiter Klick: gewünschte Replay-Dauer (10 s, 20 s, 40 s).  
+  - Zweiter Klick: gewünschter Rücksprung (10 s, 20 s, 40 s).  
   - Automatische Generierung der passenden `/get`-URL vom MediaMTX-Server.  
 
 - **Kompatibilität mit OBS**  
