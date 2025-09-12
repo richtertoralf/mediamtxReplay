@@ -61,7 +61,7 @@ Da OBS keine eingebaute Replay-Logik für externe Streams hat, gibt es zwei mög
 
 ## Infos
 
-- [📄 settings.md](docs/settings.md) – Schritt-für-Schritt Einrichtung
+- [📄 settings.md](config/settings.md) – Settings in mediamtx.yml
 
 --- 
 
