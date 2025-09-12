@@ -11,7 +11,7 @@ ls -1 /var/lib/mediamtx/recordings
 find /var/lib/mediamtx/recordings -maxdepth 2 -type d -printf "%P\n" | sed '/^$/d'
 ```
 
-## 2) /list als Einzeiler mit jq
+## 2) /list als Einzeiler mit jq (Prinzip)
 
 ```bash
 # paar Variablen setzen
@@ -29,6 +29,23 @@ Letzten Eintrag (jüngstes Segment) zeigen:
 ```bash
 curl -fsSg "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
 | jq -r '(.segments | last)? | select(.) | "\(.start) .. \(.end)"'
+
+```
+
+## Skript zur Anzeige der Replay-URL 20 Sekunden zurück
+```bash
+#!/usr/bin/env bash
+# replay20.sh – erzeugt eine /get-URL für die letzten 20 Sekunden
+
+HOST="127.0.0.1"
+PORT="9996"
+STREAM="cam1"
+FORMAT="fmp4"   # alternativ: mp4
+
+TO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+FROM=$(date -u -d '20 seconds ago' +"%Y-%m-%dT%H:%M:%S.%3NZ")
+
+echo "http://${HOST}:${PORT}/get?path=${STREAM}&from=${FROM}&to=${TO}&format=${FORMAT}"
 
 ```
 
