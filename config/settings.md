@@ -68,9 +68,8 @@ recordDeleteAfter: 15m          # ~10 Minuten Replay-Puffer + Sicherheitsreserve
 
 ### Best Practice für Sport (Skispringen, Fußball, Handball)
 
-- recordSegmentDuration: 10s
+- recordSegmentDuration: 10s     # eventuell noch kürzer halten!
 -   Replay nach 10s garantiert abrufbar
 -   Overhead im Dateisystem akzeptabel
-
 - recordPartDuration: 300ms
 -   sorgt dafür, dass Seek & Start im Clip fein genug bleiben
