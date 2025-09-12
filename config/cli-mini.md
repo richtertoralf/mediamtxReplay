@@ -15,22 +15,30 @@ find /var/lib/mediamtx/recordings -maxdepth 2 -type d -printf "%P\n" | sed '/^$/
 
 ```bash
 # paar Variablen setzen
-HOST=127.0.0.1; PORT=9996; STREAM=cam1
+HOST=127.0.0.1; PORT=9996; STREAM=testpattern-clock
 ```
 
-alle Segmente (Start .. Ende)
 ```bash
-curl -fsSg "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
-| jq -r '.segments[]? | "\(.start) .. \(.end)"'
-
+curl -sG "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
+| jq -r '.[-1].url // .url'
 ```
 
-Letzten Eintrag (jüngstes Segment) zeigen:
 ```bash
-curl -fsSg "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
-| jq -r '(.segments | last)? | select(.) | "\(.start) .. \(.end)"'
-
+curl -sG "http://127.0.0.1:9996/list" \
+  --data-urlencode "path=testpattern-clock" \
+  --data-urlencode "start=$(date -u -d '10 minutes ago' +%Y-%m-%dT%H:%M:%SZ)" | jq .
 ```
+Ergebnis:
+```
+[
+  {
+    "start": "2025-09-12T22:39:31Z",
+    "duration": 600.595724222,
+    "url": "http://127.0.0.1:9996/get?duration=600.595724222&path=testpattern-clock&start=2025-09-12T22%3A39%3A31Z"
+  }
+]
+```
+
 
 ## Skript zur Anzeige der Replay-URL 20 Sekunden zurück
 ```bash
