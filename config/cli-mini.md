@@ -35,12 +35,11 @@ curl -fsSg "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
 ## Skript zur Anzeige der Replay-URL 20 Sekunden zurück
 ```bash
 #!/usr/bin/env bash
-# replay20.sh – erzeugt eine /get-URL für die letzten 20 Sekunden
-
-HOST="127.0.0.1"
-PORT="9996"
-STREAM="cam1"
-FORMAT="fmp4"   # alternativ: mp4
+# letzte 20s, minimale Variante
+HOST="$(hostname -I | awk '{print $1}')"   # erste IP des Servers
+PORT=9996
+STREAM="${1:-testpattern-clock}"           # Pfad als 1. Argument; Default = testpattern-clock
+FORMAT="fmp4"                              # bei VLC ggf. "mp4"
 
 TO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
 FROM=$(date -u -d '20 seconds ago' +"%Y-%m-%dT%H:%M:%S.%3NZ")
