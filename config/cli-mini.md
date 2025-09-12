@@ -13,7 +13,7 @@ find /var/lib/mediamtx/recordings -maxdepth 2 -type d -printf "%P\n" | sed '/^$/
 
 ## 2) /list als Einzeiler mit jq
 
-´´´bash
+```bash
 # paar Variablen setzen
 HOST=127.0.0.1; PORT=9996; STREAM=cam1
 ```
