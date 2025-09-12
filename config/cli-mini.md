@@ -12,16 +12,23 @@ find /var/lib/mediamtx/recordings -maxdepth 2 -type d -printf "%P\n" | sed '/^$/
 ```
 
 ## 2) /list als Einzeiler mit jq
+
+´´´bash
+# paar Variablen setzen
+HOST=127.0.0.1; PORT=9996; STREAM=cam1
+```
+
+alle Segmente (Start .. Ende)
 ```bash
-curl -sG "http://127.0.0.1:9996/list" \
-  --data-urlencode "path=cam1" \
-| jq -r '.segments[] | "\(.start) .. \(.end)"'
+curl -fsSg "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
+| jq -r '.segments[]? | "\(.start) .. \(.end)"'
 
 ```
 
 Letzten Eintrag (jüngstes Segment) zeigen:
 ```bash
-curl -sG "http://127.0.0.1:9996/list" --data-urlencode "path=cam1" \
-| jq -r '.segments | last | "\(.start) .. \(.end)"'
+curl -fsSg "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
+| jq -r '(.segments | last)? | select(.) | "\(.start) .. \(.end)"'
+
 ```
 
