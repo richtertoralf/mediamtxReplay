@@ -35,16 +35,22 @@ curl -fsSg "http://${HOST}:${PORT}/list" --data-urlencode "path=${STREAM}" \
 ## Skript zur Anzeige der Replay-URL 20 Sekunden zurück
 ```bash
 #!/usr/bin/env bash
-# letzte 20s, minimale Variante
-HOST="$(hostname -I | awk '{print $1}')"   # erste IP des Servers
+# letzte 20s, minimale Variante (MediaMTX: /get?start=...&duration=...)
+set -euo pipefail
+
+HOST="$(hostname -I 2>/dev/null | awk '{print $1}')"
+[[ -z "${HOST:-}" ]] && HOST="127.0.0.1"
+
 PORT=9996
-STREAM="${1:-testpattern-clock}"           # Pfad als 1. Argument; Default = testpattern-clock
-FORMAT="fmp4"                              # bei VLC ggf. "mp4"
+STREAM="${1:-testpattern-clock}"     # Pfad als 1. Argument; Default = testpattern-clock
+FORMAT="${FORMAT:-fmp4}"             # für VLC ggf. "mp4"
+DURATION="${DURATION:-20}"           # Sekunden
 
-TO=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
-FROM=$(date -u -d '20 seconds ago' +"%Y-%m-%dT%H:%M:%S.%3NZ")
+# Startzeit: jetzt - DURATION (UTC), RFC3339 ohne ms ist ok; mit .000Z ebenfalls ok
+START=$(date -u -d "${DURATION} seconds ago" +"%Y-%m-%dT%H:%M:%S.000Z")
 
-echo "http://${HOST}:${PORT}/get?path=${STREAM}&from=${FROM}&to=${TO}&format=${FORMAT}"
-
+echo "http://${HOST}:${PORT}/get?path=${STREAM}&start=${START}&duration=${DURATION}&format=${FORMAT}"
+# Optional gleich testen:
+# curl -fS -o "/tmp/replay_last.${FORMAT/mp4/mp4}" "http://${HOST}:${PORT}/get?path=${STREAM}&start=${START}&duration=${DURATION}&format=${FORMAT}" && echo "OK"
 ```
 
